@@ -3,15 +3,13 @@
 Both train.py and agent.py import from here — change once, sync everywhere.
 """
 
-import torch as th
-from stable_baselines3 import PPO  # ✅ Change to: PPO, A2C, SAC ...
+from stable_baselines3 import A2C  # ✅ Change to: PPO, A2C, SAC ...
 
 # ═══ Algorithm choice (change freely) ════════════════════════════
-ALGORITHM     = PPO          # SB3 algorithm class
+ALGORITHM     = A2C  # SB3 algorithm class
 POLICY        = "MlpPolicy"   # RAM obs = (128,); MlpPolicy is the right fit
-POLICY_KWARGS = dict(          
-    net_arch=dict(pi=[512, 512], vf=[512, 512]),
-    activation_fn=th.nn.LeakyReLU,  # Recommended for Atari RAM; try ReLU, Tanh, etc.
+POLICY_KWARGS = dict(
+    net_arch=[256, 256],          
 )
 SAVE_PATH     = "model"        # SB3 appends .zip; upload model.zip via run.py
 # ══════════════════════════════════════════════════════════════════

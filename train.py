@@ -62,10 +62,8 @@ def main():
         env,
         policy_kwargs=POLICY_KWARGS or None,
         verbose=1,          # Print training progress; set to 0 for silent
-        learning_rate=2e-4, # PPO/A2C 建議 1e-4 ~ 1e-3; DQN 建議 5e-5 ~ 1e-4   
-        n_steps=512,        # PPO/A2C 建議較小的 n_steps；DQN 不使用此參數
-        batch_size=64,     
-        n_epochs=4,         # PPO 特有；A2C/DQN 不使用此參數
+        learning_rate=7e-5, # PPO/A2C 建議 1e-4 ~ 1e-3; DQN 建議 5e-5 ~ 1e-4   
+        n_steps=5,          # PPO/A2C 建議較小的 n_steps；DQN 不使用此參數
         gamma=0.98,         # 折扣因子；建議 0.98 ~ 0.999，越大→越重視遠期獎勵
         ent_coef=0.01,      # PPO/A2C 特有；鼓勵探索，建議 0.001 ~ 0.1；DQN 不使用此參數
     )
