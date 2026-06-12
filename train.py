@@ -67,6 +67,7 @@ def main():
         batch_size=256,     # DQN 建議 32 ~ 256；PPO/A2C 不使用此參數
         n_epochs=4,         # PPO 特有；A2C/DQN 不使用此參數
         gamma=0.98,         # 折扣因子；建議 0.98 ~ 0.999，越大→越重視遠期獎勵
+        ent_coef=0.01,      # PPO/A2C 特有；鼓勵探索，建議 0.001 ~ 0.1；DQN 不使用此參數
     )
 
     print(f"Training {ALGORITHM.__name__} for {TOTAL_TIMESTEPS:,} timesteps...")
