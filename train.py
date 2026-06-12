@@ -61,14 +61,12 @@ def main():
         POLICY,
         env,
         policy_kwargs=POLICY_KWARGS or None,
-        verbose=1,
-        learning_rate        = 1e-4,    # 建議：5e-5 ~ 1e-3
-        buffer_size          = 1000000, # 經驗回放緩衝區；記憶體足夠時可試更大
-        learning_starts      = 50000,   # 開始學習前先收集的步數（預熱期）
-        batch_size           = 32,      # 建議：32 ~ 256
-        exploration_fraction = 0.1,     # ε 衰減到最小值所用比例；越大→探索越久
-        exploration_final_eps = 0.05,   # ε 最終值；0.05 表示 5% 隨機探索
-        train_freq           = 4,       # 每幾步更新一次
+        verbose=1,          # Print training progress; set to 0 for silent
+        learning_rate=3e-4, # PPO/A2C 建議 1e-4 ~ 1e-3; DQN 建議 5e-5 ~ 1e-4   
+        n_steps=128,        # PPO/A2C 建議較小的 n_steps；DQN 不使用此參數
+        batch_size=256,     # DQN 建議 32 ~ 256；PPO/A2C 不使用此參數
+        n_epochs=4,         # PPO 特有；A2C/DQN 不使用此參數
+        gamma=0.98,         # 折扣因子；建議 0.98 ~ 0.999，越大→越重視遠期獎勵
     )
 
     print(f"Training {ALGORITHM.__name__} for {TOTAL_TIMESTEPS:,} timesteps...")
