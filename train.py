@@ -22,7 +22,7 @@ from model import ALGORITHM, POLICY, POLICY_KWARGS, SAVE_PATH
 gym.register_envs(ale_py)
 
 # ═══ ✅ Tune freely: training hyperparameters ══════════════════════
-TOTAL_TIMESTEPS = 3_000_000   # recommended: 1M+ for meaningful performance
+TOTAL_TIMESTEPS = 1_000_000   # recommended: 1M+ for meaningful performance
 N_ENVS          = 8         # parallel environments for faster sampling
 # ══════════════════════════════════════════════════════════════════
 
@@ -48,10 +48,6 @@ class PacmanRewardWrapper(gym.Wrapper):
 # 注意：啟用後觀測維度從 (128,) 變為 (512,)，網路容量需對應調整
 # ─────────────────────────────────────────────────────────────────────
 # ════════════════════════════════════════════════════════════════════
-def linear_schedule(initial_value: float):
-    def func(progress_remaining: float) -> float:
-        return progress_remaining * initial_value
-    return func
 
 def main():
     # obs_type="ram" → shape (128,) uint8, consistent with env_runner.py
@@ -65,11 +61,14 @@ def main():
         POLICY,
         env,
         policy_kwargs=POLICY_KWARGS or None,
-        verbose=1,          # Print training progress; set to 0 for silent
-        learning_rate=linear_schedule(7e-5), # PPO/A2C 建議 1e-4 ~ 1e-3; DQN 建議 5e-5 ~ 1e-4   
-        n_steps=5,          # PPO/A2C 建議較小的 n_steps；DQN 不使用此參數
-        gamma=0.98,         # 折扣因子；建議 0.98 ~ 0.999，越大→越重視遠期獎勵
-        ent_coef=0.002,     # PPO/A2C 特有；鼓勵探索，建議 0.001 ~ 0.1；DQN 不使用此參數
+        verbose=1,
+        learning_rate        = 1e-4,    # 建議：5e-5 ~ 1e-3
+        buffer_size          = 1000000, # 經驗回放緩衝區；記憶體足夠時可試更大
+        learning_starts      = 50000,   # 開始學習前先收集的步數（預熱期）
+        batch_size           = 32,      # 建議：32 ~ 256
+        exploration_fraction = 0.1,     # ε 衰減到最小值所用比例；越大→探索越久
+        exploration_final_eps = 0.05,   # ε 最終值；0.05 表示 5% 隨機探索
+        train_freq           = 4,       # 每幾步更新一次
     )
 
     print(f"Training {ALGORITHM.__name__} for {TOTAL_TIMESTEPS:,} timesteps...")

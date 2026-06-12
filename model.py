@@ -3,13 +3,13 @@
 Both train.py and agent.py import from here — change once, sync everywhere.
 """
 
-from stable_baselines3 import A2C  # ✅ Change to: PPO, A2C, SAC ...
+from stable_baselines3 import DQN  # ✅ Change to: PPO, A2C, SAC ...
 
 # ═══ Algorithm choice (change freely) ════════════════════════════
-ALGORITHM     = A2C  # SB3 algorithm class
+ALGORITHM     = DQN           # SB3 algorithm class
 POLICY        = "MlpPolicy"   # RAM obs = (128,); MlpPolicy is the right fit
-POLICY_KWARGS = dict(
-    net_arch=[256, 256],          
+POLICY_KWARGS = dict(          # Custom network architecture (optional)
+    net_arch=[512, 512],       # Two hidden layers with 256 units each
 )
 SAVE_PATH     = "model"        # SB3 appends .zip; upload model.zip via run.py
 # ══════════════════════════════════════════════════════════════════
