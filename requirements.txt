@@ -1,0 +1,9 @@
+requests
+pandas
+websockets
+joblib
+gymnasium[atari]
+ale-py
+autorom[accept-rom-license]
+stable-baselines3[extra]
+shimmy[atari]>=0.2.1
