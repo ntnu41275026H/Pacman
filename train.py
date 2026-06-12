@@ -22,23 +22,23 @@ from model import ALGORITHM, POLICY, POLICY_KWARGS, SAVE_PATH
 gym.register_envs(ale_py)
 
 # ═══ ✅ Tune freely: training hyperparameters ══════════════════════
-TOTAL_TIMESTEPS = 100_000   # recommended: 1M+ for meaningful performance
-N_ENVS          = 4         # parallel environments for faster sampling
+TOTAL_TIMESTEPS = 1_000_000   # recommended: 1M+ for meaningful performance
+N_ENVS          = 8         # parallel environments for faster sampling
 # ══════════════════════════════════════════════════════════════════
 
 
 # ═══ ✅ 進階技巧：取消注釋以啟用，可大幅提升 Agent 強度 ════════════════
 # ── 技巧 1：自訂 Reward Wrapper（在每步加入中間獎勵）─────────────────
-# import gymnasium as gym
-# class PacmanRewardWrapper(gym.Wrapper):
-#     def step(self, action):
-#         obs, reward, terminated, truncated, info = self.env.step(action)
-#         # RAM[14] 約為剩餘生命數，可用來偵測被鬼吃到
-#         # RAM[123] 約為目前關卡（越高越好）
-#         # reward -= 0.01   # 每步小懲罰，鼓勵快速得分
-#         # if terminated and info.get("lives", 1) == 0:
-#         #     reward -= 5.0   # 死亡大懲罰
-#         return obs, reward, terminated, truncated, info
+import gymnasium as gym
+class PacmanRewardWrapper(gym.Wrapper):
+    def step(self, action):
+        obs, reward, terminated, truncated, info = self.env.step(action)
+        # RAM[14] 約為剩餘生命數，可用來偵測被鬼吃到
+        # RAM[123] 約為目前關卡（越高越好）
+        # reward -= 0.01   # 每步小懲罰，鼓勵快速得分
+        # if terminated and info.get("lives", 1) == 0:
+        #     reward -= 5.0   # 死亡大懲罰
+        return obs, reward, terminated, truncated, info
 # 啟用方式：在 make_vec_env 加入 wrapper_class=PacmanRewardWrapper
 # ─────────────────────────────────────────────────────────────────────
 #
