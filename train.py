@@ -69,7 +69,7 @@ def main():
         learning_rate=linear_schedule(7e-5), # PPO/A2C 建議 1e-4 ~ 1e-3; DQN 建議 5e-5 ~ 1e-4   
         n_steps=5,          # PPO/A2C 建議較小的 n_steps；DQN 不使用此參數
         gamma=0.98,         # 折扣因子；建議 0.98 ~ 0.999，越大→越重視遠期獎勵
-        ent_coef=0.01,      # PPO/A2C 特有；鼓勵探索，建議 0.001 ~ 0.1；DQN 不使用此參數
+        ent_coef=0.002,     # PPO/A2C 特有；鼓勵探索，建議 0.001 ~ 0.1；DQN 不使用此參數
     )
 
     print(f"Training {ALGORITHM.__name__} for {TOTAL_TIMESTEPS:,} timesteps...")
