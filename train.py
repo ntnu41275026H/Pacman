@@ -22,7 +22,7 @@ from model import ALGORITHM, POLICY, POLICY_KWARGS, SAVE_PATH
 gym.register_envs(ale_py)
 
 # ═══ ✅ Tune freely: training hyperparameters ══════════════════════
-TOTAL_TIMESTEPS = 1_000_000   # recommended: 1M+ for meaningful performance
+TOTAL_TIMESTEPS = 3_000_000   # recommended: 1M+ for meaningful performance
 N_ENVS          = 8         # parallel environments for faster sampling
 # ══════════════════════════════════════════════════════════════════
 
@@ -35,9 +35,9 @@ class PacmanRewardWrapper(gym.Wrapper):
         obs, reward, terminated, truncated, info = self.env.step(action)
         # RAM[14] 約為剩餘生命數，可用來偵測被鬼吃到
         # RAM[123] 約為目前關卡（越高越好）
-        # reward -= 0.01   # 每步小懲罰，鼓勵快速得分
-        # if terminated and info.get("lives", 1) == 0:
-        #     reward -= 5.0   # 死亡大懲罰
+        reward -= 0.01   # 每步小懲罰，鼓勵快速得分
+        if terminated and info.get("lives", 1) == 0:
+            reward -= 5.0   # 死亡大懲罰
         return obs, reward, terminated, truncated, info
 # 啟用方式：在 make_vec_env 加入 wrapper_class=PacmanRewardWrapper
 # ─────────────────────────────────────────────────────────────────────
@@ -48,6 +48,10 @@ class PacmanRewardWrapper(gym.Wrapper):
 # 注意：啟用後觀測維度從 (128,) 變為 (512,)，網路容量需對應調整
 # ─────────────────────────────────────────────────────────────────────
 # ════════════════════════════════════════════════════════════════════
+def linear_schedule(initial_value: float):
+    def func(progress_remaining: float) -> float:
+        return progress_remaining * initial_value
+    return func
 
 def main():
     # obs_type="ram" → shape (128,) uint8, consistent with env_runner.py
@@ -62,7 +66,7 @@ def main():
         env,
         policy_kwargs=POLICY_KWARGS or None,
         verbose=1,          # Print training progress; set to 0 for silent
-        learning_rate=7e-5, # PPO/A2C 建議 1e-4 ~ 1e-3; DQN 建議 5e-5 ~ 1e-4   
+        learning_rate=linear_schedule(7e-5), # PPO/A2C 建議 1e-4 ~ 1e-3; DQN 建議 5e-5 ~ 1e-4   
         n_steps=5,          # PPO/A2C 建議較小的 n_steps；DQN 不使用此參數
         gamma=0.98,         # 折扣因子；建議 0.98 ~ 0.999，越大→越重視遠期獎勵
         ent_coef=0.01,      # PPO/A2C 特有；鼓勵探索，建議 0.001 ~ 0.1；DQN 不使用此參數
