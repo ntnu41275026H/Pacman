@@ -22,7 +22,7 @@ from model import ALGORITHM, POLICY, POLICY_KWARGS, SAVE_PATH
 gym.register_envs(ale_py)
 
 # ═══ ✅ Tune freely: training hyperparameters ══════════════════════
-TOTAL_TIMESTEPS = 1_000_000   # recommended: 1M+ for meaningful performance
+TOTAL_TIMESTEPS = 3_000_000   # recommended: 1M+ for meaningful performance
 N_ENVS          = 8         # parallel environments for faster sampling
 # ══════════════════════════════════════════════════════════════════
 
@@ -63,12 +63,13 @@ def main():
         policy_kwargs=POLICY_KWARGS or None,
         verbose=1,
         learning_rate        = 1e-4,    # 建議：5e-5 ~ 1e-3
-        buffer_size          = 1000000, # 經驗回放緩衝區；記憶體足夠時可試更大
+        buffer_size          = 150000,  # 經驗回放緩衝區；記憶體足夠時可試更大
         learning_starts      = 50000,   # 開始學習前先收集的步數（預熱期）
-        batch_size           = 32,      # 建議：32 ~ 256
-        exploration_fraction = 0.1,     # ε 衰減到最小值所用比例；越大→探索越久
-        exploration_final_eps = 0.05,   # ε 最終值；0.05 表示 5% 隨機探索
-        train_freq           = 4,       # 每幾步更新一次
+        batch_size           = 64,      # 建議：32 ~ 256
+        exploration_fraction = 0.2,     # ε 衰減到最小值所用比例；越大→探索越久
+        exploration_final_eps = 0.02,   # ε 最終值；0.05 表示 5% 隨機探索
+        gamma                = 0.98,    # 折扣因子；建議 0.95 ~ 0.99
+        target_update_interval=20000,
     )
 
     print(f"Training {ALGORITHM.__name__} for {TOTAL_TIMESTEPS:,} timesteps...")
