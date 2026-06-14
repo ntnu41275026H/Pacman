@@ -85,7 +85,7 @@ def main():
         "ALE/MsPacman-v5",
         n_envs=N_ENVS,
         env_kwargs={"obs_type": "ram"},
-        wrapper_class=PacmanRewardWrapper,
+        wrapper_class=PacmanAdvancedWrapper,
     )
     env = VecFrameStack(env, n_stack=4)
 
