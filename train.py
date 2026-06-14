@@ -16,6 +16,7 @@ Switching algorithms:
 import ale_py
 import gymnasium as gym
 from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.vec_env import VecFrameStack
 
 from model import ALGORITHM, POLICY, POLICY_KWARGS, SAVE_PATH
 
@@ -57,7 +58,9 @@ def main():
         "ALE/MsPacman-v5",
         n_envs=N_ENVS,
         env_kwargs={"obs_type": "ram"},
+        wrapper_class=PacmanRewardWrapper,
     )
+    env = VecFrameStack(env, n_stack=4)
 
     model = ALGORITHM(
         POLICY,
@@ -65,8 +68,8 @@ def main():
         policy_kwargs=POLICY_KWARGS or None,
         verbose=1,
         learning_rate        = 1e-4,    # 建議：5e-5 ~ 1e-3
-        buffer_size          = 200000,  # 經驗回放緩衝區；記憶體足夠時可試更大
-        learning_starts      = 50000,   # 開始學習前先收集的步數（預熱期）
+        buffer_size          = 500000,  # 經驗回放緩衝區；記憶體足夠時可試更大
+        learning_starts      = 100000,   # 開始學習前先收集的步數（預熱期）
         batch_size           = 64,      # 建議：32 ~ 256
         exploration_fraction = 0.15,    # ε 衰減到最小值所用比例；越大→探索越久
         exploration_final_eps = 0.01,   # ε 最終值；0.05 表示 5% 隨機探索
