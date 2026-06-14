@@ -31,17 +31,44 @@ N_ENVS          = 8           # parallel environments for faster sampling
 # ═══ ✅ 進階技巧：取消注釋以啟用，可大幅提升 Agent 強度 ════════════════
 # ── 技巧 1：自訂 Reward Wrapper（在每步加入中間獎勵）─────────────────
 import gymnasium as gym
-class PacmanRewardWrapper(gym.Wrapper):
+class PacmanAdvancedWrapper(gym.Wrapper):
+    def __init__(self, env):
+        super().__init__(env)
+        self.last_lives = None
+        
+        # 【新機能1: 行動空間の削減】
+        # アクションを 0=NOOP, 1=UP, 2=RIGHT, 3=LEFT, 4=DOWN の「5種類」だけに制限する！
+        # これにより、Qネットワークが予測する分岐が減り、驚くほど賢くなるのが早くなります。
+        self.action_space = gym.spaces.Discrete(5)
+
     def step(self, action):
         obs, reward, terminated, truncated, info = self.env.step(action)
-        # RAM[14] 約為剩餘生命數，可用來偵測被鬼吃到
-        # RAM[123] 約為目前關卡（越高越好）
-        reward -= 0.01   # 每步小懲罰，鼓勵快速得分
-        if terminated and info.get("lives", 1) == 0:
-            reward -= 5.0   # 死亡大懲罰
-        if reward >= 2.0:
-            reward *= 1.2
+        
+        # 1. 立ち止まり防止ペナルティ
+        reward -= 0.1  
+        
+        # 2. Episodic Life（残機減少で即ゲームオーバーとし、死の恐怖を教え込む）
+        lives = info.get("lives", 0)
+        if self.last_lives is not None and lives < self.last_lives:
+            reward -= 50.0        # 死のペナルティを重くする
+            terminated = True     # 残機が減ったら即終了させて学習をリセット
+        self.last_lives = lives
+        
+        # 【新機能2: ダイナミック報酬（ゴースト狩りの強化）】
+        # ゲーム本来のスコア: クッキー=10, パワーエサ=50, ゴースト=200, 400, 800, 1600
+        if reward == 50.0:
+            # パワーエサを食べたら追加ボーナスを与え、パワーエサの重要性を教える
+            reward += 30.0  
+        elif reward >= 200.0:
+            # ゴーストを食べた時は報酬を「2倍」に跳ね上げ、積極的に連続で狩るように仕向ける
+            reward *= 2.0   
+            
         return obs, reward, terminated, truncated, info
+
+    def reset(self, **kwargs):
+        self.last_lives = None
+        return self.env.reset(**kwargs)
+
 # 啟用方式：在 make_vec_env 加入 wrapper_class=PacmanRewardWrapper
 # ─────────────────────────────────────────────────────────────────────
 #
