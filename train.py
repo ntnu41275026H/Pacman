@@ -23,7 +23,7 @@ from model import ALGORITHM, POLICY, POLICY_KWARGS, SAVE_PATH
 gym.register_envs(ale_py)
 
 # ═══ ✅ Tune freely: training hyperparameters ══════════════════════
-TOTAL_TIMESTEPS = 3_000_000   # recommended: 1M+ for meaningful performance
+TOTAL_TIMESTEPS = 5_000_000   # recommended: 1M+ for meaningful performance
 N_ENVS          = 8           # parallel environments for faster sampling
 # ══════════════════════════════════════════════════════════════════
 
@@ -96,8 +96,8 @@ def main():
         verbose=1,
         learning_rate        = 1e-4,    # 建議：5e-5 ~ 1e-3
         buffer_size          = 500000,  # 經驗回放緩衝區；記憶體足夠時可試更大
-        learning_starts      = 100000,   # 開始學習前先收集的步數（預熱期）
-        batch_size           = 64,      # 建議：32 ~ 256
+        learning_starts      = 100000,  # 開始學習前先收集的步數（預熱期）
+        batch_size           = 128,     # 建議：32 ~ 256
         exploration_fraction = 0.15,    # ε 衰減到最小值所用比例；越大→探索越久
         exploration_final_eps = 0.01,   # ε 最終值；0.05 表示 5% 隨機探索
         train_freq           = 4,       # 每幾步更新一次
