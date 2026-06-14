@@ -51,7 +51,6 @@ class PacmanAdvancedWrapper(gym.Wrapper):
         lives = info.get("lives", 0)
         if self.last_lives is not None and lives < self.last_lives:
             reward -= 50.0        # 死のペナルティを重くする
-            terminated = True     # 残機が減ったら即終了させて学習をリセット
         self.last_lives = lives
         
         # 【新機能2: ダイナミック報酬（ゴースト狩りの強化）】
