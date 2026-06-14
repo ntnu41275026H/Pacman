@@ -50,7 +50,7 @@ class PacmanAdvancedWrapper(gym.Wrapper):
         # 2. Episodic Life（残機減少で即ゲームオーバーとし、死の恐怖を教え込む）
         lives = info.get("lives", 0)
         if self.last_lives is not None and lives < self.last_lives:
-            reward -= 50.0        # 死のペナルティを重くする
+            reward -= 500        # 死のペナルティを重くする
         self.last_lives = lives
         
         # 【新機能2: ダイナミック報酬（ゴースト狩りの強化）】
