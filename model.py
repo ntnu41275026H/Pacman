@@ -9,7 +9,7 @@ from stable_baselines3 import DQN  # ✅ Change to: PPO, A2C, SAC ...
 ALGORITHM     = DQN           # SB3 algorithm class
 POLICY        = "MlpPolicy"   # RAM obs = (128,); MlpPolicy is the right fit
 POLICY_KWARGS = dict(          # Custom network architecture (optional)
-    net_arch=[512, 256, 128],  # Three hidden layers with 512, 256, and 128 units respectively
+    net_arch=[1024, 512, 256],  # Three hidden layers with 1024, 512, and 256 units respectively
 )
 SAVE_PATH     = "model"        # SB3 appends .zip; upload model.zip via run.py
 # ══════════════════════════════════════════════════════════════════

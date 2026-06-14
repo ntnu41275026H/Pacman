@@ -23,7 +23,7 @@ gym.register_envs(ale_py)
 
 # ═══ ✅ Tune freely: training hyperparameters ══════════════════════
 TOTAL_TIMESTEPS = 3_000_000   # recommended: 1M+ for meaningful performance
-N_ENVS          = 4         # parallel environments for faster sampling
+N_ENVS          = 8           # parallel environments for faster sampling
 # ══════════════════════════════════════════════════════════════════
 
 
